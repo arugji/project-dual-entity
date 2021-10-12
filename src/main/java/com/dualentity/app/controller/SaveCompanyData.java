@@ -2,25 +2,21 @@ package com.dualentity.app.controller;
 
 import java.io.IOException;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.dualentity.app.entity.CandyDetails;
-import com.dualentity.app.entity.CompanyDetails;
-import com.dualentity.app.util.EntityManagerUtil;
+import com.dualentity.app.helper.ListHelper;
 
 /**
- * arugji 
- * CIS175 fall 2021
- * Oct 5
+ * arugji CIS175 fall 2021 Oct 5
  */
 @WebServlet("/SaveCompanyData")
 public class SaveCompanyData extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ListHelper lh = new ListHelper();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -47,15 +43,8 @@ public class SaveCompanyData extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String candyId = request.getParameter("candyId");
-		EntityManager entityManager = EntityManagerUtil.getEntityManager();
-		entityManager.getTransaction().begin();
-		CandyDetails candyObj = entityManager.find(CandyDetails.class, Long.parseLong(candyId));
-		CompanyDetails cm = new CompanyDetails();
-		cm.setCandyDetails(candyObj);
-		cm.setName(request.getParameter("name"));
-		entityManager.persist(cm);
-		entityManager.getTransaction().commit();
-		entityManager.refresh(cm);
+		String name = request.getParameter("name");
+		lh.insertCompanyDetails(name, Long.parseLong(candyId));
 		getServletContext().getRequestDispatcher("/ViewAllNameServlet").forward(request, response);
 	}
 

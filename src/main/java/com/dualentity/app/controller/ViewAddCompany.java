@@ -2,7 +2,6 @@ package com.dualentity.app.controller;
 
 import java.io.IOException;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,16 +9,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dualentity.app.entity.CandyDetails;
-import com.dualentity.app.util.EntityManagerUtil;
+import com.dualentity.app.helper.ListHelper;
 
 /**
  * arugji 
- * CIS175 fall 2021
+ * CIS175 fall 2021 
  * Oct 5
  */
 @WebServlet("/ViewAddCompany")
 public class ViewAddCompany extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ListHelper lh = new ListHelper();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -37,12 +37,9 @@ public class ViewAddCompany extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String candyId = request.getParameter("id");
-		EntityManager entityManager = EntityManagerUtil.getEntityManager();
-		entityManager.getTransaction().begin();
-		CandyDetails clr = entityManager.find(CandyDetails.class, Long.parseLong(candyId));
-		request.setAttribute("name", clr.getName());
+		CandyDetails candyDetails = lh.searchCandyDetailsById(Long.parseLong(candyId));
+		request.setAttribute("name", candyDetails.getName());
 		request.setAttribute("candyId", candyId);
-		entityManager.getTransaction().commit();
 		getServletContext().getRequestDispatcher("/add-company.jsp").forward(request, response);
 	}
 
